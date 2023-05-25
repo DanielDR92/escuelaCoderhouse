@@ -7,6 +7,19 @@
   <title>Document</title>
 </head>
 <body>
+  <button id="addItemButton" onClick="addItem()">Agregar Elemento</button>
+
+  <div id ="addItemForm" hidden ="hidden">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" id="nombre">
+    <label for="Descripcion">Descripcion:</label>
+    <input type="text" name="descripcion" id="descripcion">
+    <label for="precio">Precio:</label>
+    <input type="number" name="precio" id="precio">
+    <button onClick="aceptar()">Aceptar</button>
+  </div>
+
+  <div id="listaItems"></div>
   <script src="./index.js"></script>
 </body>
 </html>
