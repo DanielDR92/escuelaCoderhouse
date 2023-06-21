@@ -1,11 +1,8 @@
-
-
 const containerProducts = document.getElementById(`container-products`);
 const modal = document.getElementById(`ventana-modal`);
 const logginModal = document.getElementById(`loggin-modal`);
 const enviarUsuario = document.getElementById(`enviarUsuario`);
 const mensajeBienvenida = document.getElementById(`mensajeBienvenida`);
-const agregarCarrito = document.getElementsByClassName(`agregar-carrito`);
 const carrito =[];
 const containerCart = document.getElementById('carritoCompras');
 let productosUnicos =[];
@@ -14,7 +11,7 @@ const btnClose = document.getElementById('botonClose');
 const totalCarrito = document.getElementById('total');
 
 
-let usuario = JSON.parse(sessionStorage.getItem("usuario")) || undefined; 
+let usuario = JSON.parse(localStorage.getItem("usuario")) || undefined; 
 
 const productos = [];
 
@@ -26,18 +23,22 @@ const getAllProducts = async function () {
 
 
 const renderizarProductos = async function () {
-    await getAllProducts()
-    for (const producto of productos) {
-        const divCard = document.createElement(`div`);
-        divCard.classList.add(`card`);
-        divCard.innerHTML += `
-            <img src="./img/${producto.img}" alt="${producto.nombre}" />
-            <h4>${producto.nombre}</h4>
-            <p>$${producto.precio}</p>
-            <a id=${producto.id} class="boton agregar-carrito" href="#">Agregar</a>
-        `;
-        containerProducts.appendChild(divCard);
-    };
+    try {
+        await getAllProducts()
+        for (const producto of productos) {
+            const divCard = document.createElement(`div`);
+            divCard.classList.add(`card`);
+            divCard.innerHTML += `
+                <img src="./img/${producto.img}" alt="${producto.nombre}" />
+                <h4>${producto.nombre}</h4>
+                <p>$${producto.precio}</p>
+                <button id=${producto.id} class="boton agregar-carrito" href="#">Agregar</button>
+            `;
+            containerProducts.appendChild(divCard);
+        };
+    } catch (error) {
+        console.error(error)
+    }
 };
 
 botonCarrito.onclick = function () {
@@ -57,7 +58,7 @@ if ( !usuario ) {
             nombre: document.getElementById(`nombre`).value,
             edad: document.getElementById(`edad`).value
         }
-        sessionStorage.setItem("usuario", JSON.stringify(usuario));
+        localStorage.setItem("usuario", JSON.stringify(usuario));
         location.reload();    
     }
 } else {
@@ -65,9 +66,10 @@ if ( !usuario ) {
     mensajeBienvenida.innerText = `Bienvenido ${usuario.nombre}!`
     renderizarProductos();
 
-    const agregarProducto = e => { 
+    const agregarProducto = function (e)  { 
         let total = 0;
         carrito.push(...productos.filter(x => x.id == e.target.id));
+        sessionStorage.setItem("carrito", JSON.stringify(carrito))
 
         while (containerCart.firstChild) {
             containerCart.removeChild(containerCart.firstChild);
@@ -92,11 +94,17 @@ if ( !usuario ) {
         for (const elemento of carrito){
             total += elemento.precio
         }
-    
-        alert(`El total del carrito es $ ${total} pesos`)
+        
+        totalCarrito.innerText = `$ ${total}`;
+        sweetAlert(`El total del carrito es $ ${total} pesos`)
     }
-      
-    for (let boton of agregarCarrito) {
-        boton.addEventListener("click", agregarProducto);
-    }
+
+
+    containerProducts.addEventListener('click', (e) => {
+        if(e.target.classList.contains('agregar-carrito')) {
+            console.log(e.target)
+            agregarProducto(e)
+        }
+    })
+
 }
