@@ -1,3 +1,5 @@
+
+
 const containerProducts = document.getElementById(`container-products`);
 const modal = document.getElementById(`ventana-modal`);
 const logginModal = document.getElementById(`loggin-modal`);
@@ -11,42 +13,20 @@ const botonCarrito = document.getElementById('carrito');
 const btnClose = document.getElementById('botonClose');
 const totalCarrito = document.getElementById('total');
 
+
 let usuario = JSON.parse(sessionStorage.getItem("usuario")) || undefined; 
 
-const productos = [
-	{
-		id: 1,
-		nombre: `Agua Pellegrino`,
-		precio: 800,
-		img: `agua-pellegrino.jpg`
-	},
-	{
-		id: 2,
-		nombre: `Agua Bonaqua`,
-		precio: 500,
-		img: `agua-bonagua.jpg`
-	},
-	{
-		id: 3,
-		nombre: `Andes Origen`,
-		precio: 400,
-		img: `andes-origen.jpg`
-	},
-	{
-		id: 4,
-		nombre: `Aquarius Pera`,
-		precio: 130,
-		img: `aquarius-pera.jpg`
-	},
-	{
-		id: 5,
-		nombre: `Aquarius Pomelo`,
-		precio: 190,
-		img: `aquarius-pomelo.jpg`
-	}
-];
+const productos = [];
 
-const renderizarProductos = function () {
+const getAllProducts = async function () {
+    let data = await fetch('../data/productos.json')
+    data = await data.json()
+    productos.push(...data)
+}
+
+
+const renderizarProductos = async function () {
+    await getAllProducts()
     for (const producto of productos) {
         const divCard = document.createElement(`div`);
         divCard.classList.add(`card`);
@@ -117,6 +97,6 @@ if ( !usuario ) {
     }
       
     for (let boton of agregarCarrito) {
-    boton.addEventListener("click", agregarProducto);
+        boton.addEventListener("click", agregarProducto);
     }
-};
+}
