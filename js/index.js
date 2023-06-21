@@ -102,7 +102,6 @@ if ( !usuario ) {
 
     containerProducts.addEventListener('click', (e) => {
         if(e.target.classList.contains('agregar-carrito')) {
-            console.log(e.target)
             agregarProducto(e)
         }
     })
